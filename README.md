@@ -159,33 +159,7 @@ Step 11: Generate Business Insights
 Observation → Interpretation → Business Impact
 
 Recommended Directory Structure
-Cart2Insights/
-│
-├── data/
-│   ├── raw/
-│   └── processed/
-│
-├── src/
-│   ├── step1_load_raw.py
-│   ├── step2_clean_data.py
-│   ├── step3_feature_engineering.py
-│   ├── step4_load_to_mysql.py
-│   ├── step5_sql_queries.py
-│   └── step6_streamlit_app.py
-│
-├── notebooks/
-│   ├── 01_data_cleaning.ipynb
-│   ├── 02_feature_engineering.ipynb
-│   ├── 03_outliers_knn.ipynb
-│   ├── 04_sql_analysis.ipynb
-│   └── 05_ml_model.ipynb
-│
-├── dashboard/
-│   └── app.py
-│
-├── README.md
-└── requirements.txt
-
+<img width="591" height="820" alt="image" src="https://github.com/user-attachments/assets/bae16017-d909-4538-ae19-221c98ba527f" />
 
 Technical Tags
 Python, Pandas, SQL, MySQL, Data Cleaning, EDA, Data Visualization,
