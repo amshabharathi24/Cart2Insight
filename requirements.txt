@@ -1,0 +1,8 @@
+pandas
+numpy
+scikit-learn
+streamlit
+sqlalchemy
+pymysql
+matplotlib
+seaborn
