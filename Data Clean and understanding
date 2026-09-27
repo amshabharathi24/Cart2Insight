@@ -1,1 +1,119 @@
+import pandas as pd
+import numpy as np
+
+# ============================
+# LOAD ALL DATASETS
+# ============================
+customers = pd.read_csv('D:/Bharathi/python code/raw data/olist_customers_dataset.csv')
+geolocation = pd.read_csv('D:/Bharathi/python code/raw data/olist_geolocation_dataset.csv')
+order_items = pd.read_csv('D:/Bharathi/python code/raw data/olist_order_items_dataset.csv')
+order_payments = pd.read_csv('D:/Bharathi/python code/raw data/olist_order_payments_dataset.csv')
+order_reviews = pd.read_csv('D:/Bharathi/python code/raw data/olist_order_reviews_dataset.csv')
+orders = pd.read_csv('D:/Bharathi/python code/raw data/olist_orders_dataset.csv')
+sellers = pd.read_csv('D:/Bharathi/python code/raw data/olist_sellers_dataset.csv')
+product_category = pd.read_csv('D:/Bharathi/python code/raw data/product_category_name_translation.csv')
+products = pd.read_csv('D:/Bharathi/python code/raw data/olist_products_dataset.csv')
+
+# Dictionary for looping
+datasets = {
+    "customers": customers,
+    "orders": orders,
+    "order_items": order_items,
+    "payments": order_payments,
+    "reviews": order_reviews,
+    "geolocation": geolocation,
+    "sellers": sellers,
+    "product_category": product_category,
+    "products": products
+}
+
+# ============================
+# DATA UNDERSTANDING
+# ============================
+
+for name, df in datasets.items():
+    print(f"\n==================== {name.upper()} ====================")
+
+    # Shape
+    print(f"Shape: {df.shape} (Rows: {df.shape[0]}, Columns: {df.shape[1]})")
+
+    # Column names
+    print("\nColumns:")
+    print(df.columns.tolist())
+
+    # Data types
+    print("\nData Types:")
+    print(df.dtypes)
+
+    # Missing values
+    print("\nMissing Values:")
+    print(df.isnull().sum())
+
+    # Missing percentage
+    missing_pct = (df.isnull().sum() / len(df)) * 100
+    print("\nMissing Percentage (%):")
+    print(missing_pct.round(2))
+
+    # Duplicates
+    print(f"\nDuplicate Rows: {df.duplicated().sum()}")
+
+    # Summary statistics
+    print("\nSummary Statistics:")
+    print(df.describe(include='all'))
+
+    # Unique values per column
+    print("\nUnique Values per Column:")
+    for col in df.columns:
+        print(f"{col}: {df[col].nunique()} unique values")
+
+# ============================
+# DATA BALANCE CHECK (for classification)
+# Example: review_score
+# ============================
+
+if "review_score" in order_reviews.columns:
+    print("\nReview Score Balance:")
+    print(order_reviews["review_score"].value_counts())
+
+# ============================
+#  HANDLE MISSING VALUES
+# ============================
+
+# MCAR → Fill review comments
+order_reviews['review_comment_title'] = order_reviews['review_comment_title'].fillna('no comment')
+order_reviews['review_comment_message'] = order_reviews['review_comment_message'].fillna('no comment')
+
+# MAR → Product metadata
+products['product_category_name'] = products['product_category_name'].fillna('unknown')
+products['product_name_lenght'] = products['product_name_lenght'].fillna(0)
+products['product_description_lenght'] = products['product_description_lenght'].fillna(0)
+products['product_photos_qty'] = products['product_photos_qty'].fillna(0)
+
+# Numerical median imputation
+dim_cols = ['product_weight_g', 'product_length_cm', 'product_height_cm', 'product_width_cm']
+for col in dim_cols:
+    products[col] = products[col].fillna(products[col].median())
+
+# MNAR → Orders timestamps
+orders['order_approved_at'] = orders['order_approved_at'].fillna(orders['order_purchase_timestamp'])
+
+# ============================
+#REMOVE DUPLICATES
+# ============================
+
+for name, df in datasets.items():
+    dupes = df.duplicated().sum()
+    if dupes > 0:
+        df.drop_duplicates(inplace=True)
+        print(f"Dropped {dupes} duplicates from {name}")
+
+# ============================
+# VERIFY CLEANING
+# ============================
+
+for name, df in datasets.items():
+    print(f"\n=== {name.upper()} CLEANING VERIFICATION ===")
+    print("Missing values:")
+    print(df.isnull().sum())
+    print("Duplicates:", df.duplicated().sum())
 
